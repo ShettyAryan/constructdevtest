@@ -237,7 +237,18 @@ function Carousel({
         style={{ gap: `${GAP}px`, x }}
       >
         {carouselItems.map((item, index) => {
-          // Disable 3D transforms on mobile for better performance
+          // Always calculate range and rotateY to maintain hook order
+          // But only use rotateY on desktop
+          const range = [
+            -(index + 1) * trackOffset,
+            -index * trackOffset,
+            -(index - 1) * trackOffset,
+          ];
+
+          // Always call useTransform to maintain hook order
+          const rotateY = useTransform(x, range, [70, 0, -70]);
+
+          // On mobile, use regular div without 3D transforms
           if (isMobile) {
             return (
               <div
@@ -255,14 +266,7 @@ function Carousel({
             );
           }
 
-          const range = [
-            -(index + 1) * trackOffset,
-            -index * trackOffset,
-            -(index - 1) * trackOffset,
-          ];
-
-          const rotateY = useTransform(x, range, [70, 0, -70]);
-
+          // On desktop, use motion.div with 3D transforms
           return (
             <motion.div
               key={index}
