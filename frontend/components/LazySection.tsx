@@ -11,28 +11,29 @@ interface LazySectionProps {
 
 /**
  * Lazy loads sections using Intersection Observer
- * Only renders children when they're about to enter viewport
+ * Keeps components mounted once loaded to prevent reloading on scroll back
  */
 export default function LazySection({
   children,
-  fallback = <div className="w-full h-32 bg-[#1a1a1a] rounded-lg animate-pulse" />,
-  rootMargin = "100px", // Start loading 100px before entering viewport
-  threshold = 0.1,
+  fallback = <div className="w-full h-32 bg-[#1a1a1a] rounded-lg" />,
+  rootMargin = "300px", // Start loading 300px before entering viewport for smoother experience
+  threshold = 0.01, // Lower threshold for earlier loading
 }: LazySectionProps) {
   const [shouldRender, setShouldRender] = useState(false);
-  const [hasRendered, setHasRendered] = useState(false);
+  const hasRendered = useRef(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const element = ref.current;
-    if (!element || hasRendered) return;
+    if (!element || hasRendered.current) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && !hasRendered.current) {
+          // Load component when near viewport - only once
           setShouldRender(true);
-          setHasRendered(true);
-          observer.disconnect();
+          hasRendered.current = true;
+          observer.disconnect(); // Disconnect after first load
         }
       },
       {
@@ -46,11 +47,17 @@ export default function LazySection({
     return () => {
       observer.disconnect();
     };
-  }, [rootMargin, threshold, hasRendered]);
+  }, [rootMargin, threshold]);
 
   return (
     <div ref={ref}>
-      {shouldRender ? children : fallback}
+      {shouldRender ? (
+        // Once loaded, keep component mounted permanently to prevent reloading
+        // This ensures smooth scrolling when returning to top
+        children
+      ) : (
+        fallback
+      )}
     </div>
   );
 }

@@ -43,6 +43,11 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${zendots.variable} ${robotoFlex.variable} ${robotoMono.variable} antialiased relative overflow-x-hidden bg-black min-h-screen`}
+        style={{
+          // Optimize scroll performance
+          overscrollBehavior: 'contain',
+          WebkitOverflowScrolling: 'touch',
+        }}
       >
         <div className="fixed inset-0 -z-10 pointer-events-none h-full w-full">
           {/* Only render BeamsBackground on desktop - lazy load it */}

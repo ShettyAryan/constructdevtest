@@ -22,29 +22,36 @@ const ServicesLazy = dynamic(() => import("@/components/Services"));
 
 export default function Home() {
   return (
-    <div className="w-full relative p-5">
+    <div 
+      className="w-full relative p-5" 
+      style={{ 
+        // Optimize for smooth scrolling
+        transform: 'translateZ(0)',
+        WebkitTransform: 'translateZ(0)',
+      }}
+    >
       <div className="mt-25 mb-10" id="home">
         <Hero />
       </div>
       
-      {/* Lazy load components below the fold with intersection observer */}
-      <LazySection>
+      {/* Lazy load components below the fold - keep mounted once loaded */}
+      <LazySection rootMargin="300px">
         <WhyChooseUsLazy />
       </LazySection>
       
-      <LazySection>
+      <LazySection rootMargin="300px">
         <div id="services" className="mt-20">
           <ServicesLazy />
         </div>
       </LazySection>
       
-      <LazySection>
+      <LazySection rootMargin="300px">
         <div id="projects" className="mt-20">
           <OurWork />
         </div>
       </LazySection>
       
-      <LazySection>
+      <LazySection rootMargin="300px">
         <div className="mt-10">
           <Testimonials />
         </div>

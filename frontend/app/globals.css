@@ -2,8 +2,38 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
-html{
- scroll-behavior: smooth;
+
+/* Optimize scrolling performance */
+html {
+  scroll-behavior: smooth;
+  /* Enable hardware acceleration for smooth scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Optimize font rendering during scroll */
+  text-rendering: optimizeSpeed;
+}
+
+/* Optimize scroll containers */
+body {
+  /* Enable GPU acceleration for scrolling */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  /* Optimize repaints during scroll */
+  will-change: scroll-position;
+}
+
+/* Optimize sections for smooth scrolling */
+section, [id] {
+  /* Enable hardware acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  /* Optimize for scroll performance - but don't break layout */
+  contain: layout style;
+}
+
+/* Optimize scroll containers */
+.scroll-container {
+  will-change: scroll-position;
+  transform: translateZ(0);
 }
 ::-webkit-scrollbar-button {
   display: none;
@@ -33,6 +63,11 @@ html{
 
 body {
   font-family: var(--font-roboto-flex), Arial, Helvetica, sans-serif;
+  /* Prevent layout shifts during scroll */
+  overflow-x: hidden;
+  /* Optimize repaints */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .font-zen{
   font-family: var(--font-zen-dots);

@@ -8,30 +8,83 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("home");
 
-  // Section highlight on scroll
+  // Section highlight on scroll - highly optimized for smooth scrolling
   useEffect(() => {
     const sections = ["home", "services", "projects"];
+    let ticking = false;
+    let rafId: number | null = null;
+    let lastScrollY = 0;
+    let cachedElements: (HTMLElement | null)[] = [];
+    let cachedOffsets: { top: number; bottom: number }[] = [];
 
-    const handleScroll = () => {
-      let current = "home";
-
-      sections.forEach((id) => {
-        const section = document.getElementById(id);
-        if (!section) return;
-
+    // Cache section elements and their offsets
+    const updateCache = () => {
+      cachedElements = sections.map(id => document.getElementById(id));
+      cachedOffsets = cachedElements.map(section => {
+        if (!section) return { top: 0, bottom: 0 };
         const rect = section.getBoundingClientRect();
-        if (rect.top <= 120 && rect.bottom >= 120) {
-          current = id;
-        }
+        return {
+          top: rect.top + window.scrollY,
+          bottom: rect.top + window.scrollY + rect.height,
+        };
       });
-
-      setActive(current);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const scrollDelta = Math.abs(scrollY - lastScrollY);
+          
+          // Only update if scrolled significantly (reduce updates)
+          if (scrollDelta > 50) {
+            // Recalculate cache only when needed (after resize or large scroll)
+            if (cachedElements.length === 0 || scrollDelta > 200) {
+              updateCache();
+            }
 
-    return () => window.removeEventListener("scroll", handleScroll);
+            let current = "home";
+            const viewportMiddle = scrollY + 120;
+
+            // Use cached offsets instead of getBoundingClientRect
+            for (let i = 0; i < cachedOffsets.length; i++) {
+              const offset = cachedOffsets[i];
+              if (offset && viewportMiddle >= offset.top && viewportMiddle <= offset.bottom) {
+                current = sections[i];
+                break;
+              }
+            }
+
+            setActive(current);
+            lastScrollY = scrollY;
+          }
+          
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    // Initial cache
+    updateCache();
+    
+    // Recalculate on resize
+    const handleResize = () => {
+      updateCache();
+    };
+
+    // Use passive listener for better scroll performance
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
+    handleScroll(); // Initial check
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   const linkClass = (id: string) =>
