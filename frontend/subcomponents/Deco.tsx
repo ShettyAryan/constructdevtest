@@ -5,6 +5,10 @@ import { TypeAnimation } from 'react-type-animation';
 import { useIsMobile, useReducedMotion } from "@/lib/useIsMobile";
 
 const Deco = () => {
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
+  const shouldAnimate = !isMobile && !prefersReducedMotion;
+  
   return (
     <div className="relative flex">
       <div className="w-15 h-15 border-[#0033ff] border-2 bg-black p-2 rounded-full z-1 flex items-center justify-center">

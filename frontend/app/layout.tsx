@@ -2,12 +2,7 @@ import type { Metadata } from "next";
 import { Zen_Dots, Roboto_Flex, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import dynamic from "next/dynamic";
-
-// Lazy load BeamsBackground - it's heavy and only needed on desktop
-const BeamsBackground = dynamic(() => import("@/components/ui/beams-background").then(mod => ({ default: mod.BeamsBackground })), {
-  ssr: false, // Don't render on server - it's canvas-based
-});
+import BeamsBackgroundWrapper from "@/components/BeamsBackgroundWrapper";
 
 const zendots = Zen_Dots({
   variable: "--font-zen-dots",
@@ -49,7 +44,7 @@ export default function RootLayout({
         <div className="fixed inset-0 -z-10 pointer-events-none h-full w-full">
           {/* Only render BeamsBackground on desktop - lazy load it */}
           <div className="hidden sm:block">
-            <BeamsBackground />
+            <BeamsBackgroundWrapper />
           </div>
 
           {/* Lightweight gradient fallback for mobile */}

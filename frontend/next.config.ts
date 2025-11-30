@@ -10,8 +10,6 @@ const nextConfig: NextConfig = {
   },
   // Compress output
   compress: true,
-  // Optimize production builds
-  swcMinify: true,
   // Reduce bundle size
   experimental: {
     optimizePackageImports: ['lucide-react', 'react-icons'],
