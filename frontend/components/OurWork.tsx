@@ -123,7 +123,7 @@ const OurWorks = () => {
               width={500}
               height={600}
               alt={w.title}
-              quality={75}
+              quality={isMobile ? 65 : 75} // Lower quality on mobile
               loading="lazy"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
               className="w-full h-full object-cover rounded-xl"

@@ -11,11 +11,13 @@ function CarouselProjectCard({
   title,
   subtitle,
   nav,
+  priority = false,
 }: {
   image: string;
   title: string;
   subtitle: string;
   nav?: string;
+  priority?: boolean;
 }) {
   return (
     <div className="relative w-full h-full overflow-hidden bg-[#0e0e0e] border border-[#1a1a1a]">
@@ -25,10 +27,11 @@ function CarouselProjectCard({
           alt={title}
           height={500}
           width={600}
-          quality={70}
-          loading="lazy"
+          quality={65} // Lower quality for mobile to reduce file size
+          loading={priority ? "eager" : "lazy"}
           sizes="100vw"
           className="w-full h-full object-fill"
+          fetchPriority={priority ? "high" : "low"}
         />
         <div className="absolute group top-4 right-4 bg-[#0033ff] h-14 w-14 rounded-full flex items-center justify-center shadow-[0_0_30px_#0033ff80]">
           <Link href={nav ? `${nav}` : "#"} target="_blank">
@@ -101,6 +104,7 @@ export default function MobileCarousel({ items }: MobileCarouselProps) {
         className="flex transition-transform duration-300 ease-out"
         style={{
           transform: `translateX(-${currentIndex * 100}%)`,
+          willChange: "transform", // Optimize for mobile performance
         }}
       >
         {items.map((item, index) => (
@@ -114,6 +118,7 @@ export default function MobileCarousel({ items }: MobileCarouselProps) {
               title={item.title}
               subtitle={item.description}
               nav={item.nav}
+              priority={index === currentIndex}
             />
           </div>
         ))}

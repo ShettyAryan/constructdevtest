@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import CTA from "@/components/CTA";
 import WorkTogether from "@/components/WorkTogether";
 import Footer from "@/components/Footer";
+import LazySection from "@/components/LazySection";
 
 // Aggressively lazy load heavy components - only load when needed
 // SSR enabled for better SEO and initial load, but components are still code-split
@@ -26,20 +27,28 @@ export default function Home() {
         <Hero />
       </div>
       
-      {/* Lazy load components below the fold */}
-      <WhyChooseUsLazy />
+      {/* Lazy load components below the fold with intersection observer */}
+      <LazySection>
+        <WhyChooseUsLazy />
+      </LazySection>
       
-      <div id="services" className="mt-20">
-        <ServicesLazy />
-      </div>
+      <LazySection>
+        <div id="services" className="mt-20">
+          <ServicesLazy />
+        </div>
+      </LazySection>
       
-      <div id="projects" className="mt-20">
-        <OurWork />
-      </div>
+      <LazySection>
+        <div id="projects" className="mt-20">
+          <OurWork />
+        </div>
+      </LazySection>
       
-      <div className="mt-10">
-        <Testimonials />
-      </div>
+      <LazySection>
+        <div className="mt-10">
+          <Testimonials />
+        </div>
+      </LazySection>
       
       <CTA />
       <WorkTogether />

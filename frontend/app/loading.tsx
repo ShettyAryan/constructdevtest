@@ -22,7 +22,7 @@ export default function Loading() {
         className="relative z-10"
       >
         <Image
-          src="./assets/logo.svg" // 🔥 Replace with your image
+          src="/assets/logo.svg" // 🔥 Replace with your image
           alt="Loading"
           width={140}
           height={140}
