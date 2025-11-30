@@ -2,7 +2,7 @@
 import React from 'react'
 import dynamic from "next/dynamic";
 import MarqueeText from "@/subcomponents/MarqueeText";
-import { useIsMobile } from "@/lib/useIsMobile";
+import { useMobileContext } from "@/lib/MobileContext";
 
 // Lazy load react-fast-marquee only on desktop
 const Marquee = dynamic(
@@ -11,7 +11,7 @@ const Marquee = dynamic(
 );
 
 const WorkTogether = () => {
-  const isMobile = useIsMobile();
+  const { isMobile } = useMobileContext();
   
   return (
     <div className="w-full py-6 md:py-10">

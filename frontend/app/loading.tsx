@@ -3,10 +3,10 @@
 
 import Image from "next/image";
 import { motion } from "motion/react";
-import { useIsMobile } from "@/lib/useIsMobile";
+import { useMobileContext } from "@/lib/MobileContext";
 
 export default function Loading() {
-  const isMobile = useIsMobile();
+  const { isMobile } = useMobileContext();
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center bg-[#0e0e0e] relative overflow-hidden">
       {/* Glow background */}
@@ -15,30 +15,48 @@ export default function Loading() {
       </div>
 
       {/* Logo / Image */}
-      <motion.div
-        initial={{ opacity: isMobile ? 1 : 0, scale: isMobile ? 1 : 0.7 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: isMobile ? 0 : 0.8, ease: "easeOut" }}
-        className="relative z-10"
-      >
-        <Image
-          src="/assets/logo.svg" // 🔥 Replace with your image
-          alt="Loading"
-          width={140}
-          height={140}
-          className="rounded-xl object-contain drop-shadow-[0_0_30px_#0033FF70]"
-        />
-      </motion.div>
+      {isMobile ? (
+        <div className="relative z-10">
+          <Image
+            src="/assets/logo.svg"
+            alt="Loading"
+            width={140}
+            height={140}
+            className="rounded-xl object-contain drop-shadow-[0_0_30px_#0033FF70]"
+          />
+        </div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.7 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative z-10"
+        >
+          <Image
+            src="/assets/logo.svg"
+            alt="Loading"
+            width={140}
+            height={140}
+            className="rounded-xl object-contain drop-shadow-[0_0_30px_#0033FF70]"
+          />
+        </motion.div>
+      )}
 
       {/* Text below */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: isMobile ? 0 : 0.8 }}
-        className="text-gray-300 tracking-widest text-sm mt-6 uppercase z-10"
-      >
-        Loading your experience...
-      </motion.p>
+      {isMobile ? (
+        <p className="text-gray-300 tracking-widest text-sm mt-6 uppercase z-10">
+          Loading your experience...
+        </p>
+      ) : (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          className="text-gray-300 tracking-widest text-sm mt-6 uppercase z-10"
+        >
+          Loading your experience...
+        </motion.p>
+      )}
 
       {/* Loader ring */}
       {!isMobile && (

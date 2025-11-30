@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Marquee } from "./ui/marquee";
 import Image from "next/image";
 import React from "react";
-import { useIsMobile } from "@/lib/useIsMobile";
+import { useMobileContext } from "@/lib/MobileContext";
 
 const reviews = [
   {
@@ -81,7 +81,7 @@ const ReviewCard = ({
 };
 
  function Testimonials() {
-  const isMobile = useIsMobile();
+  const { isMobile } = useMobileContext();
   
   return (
     <div

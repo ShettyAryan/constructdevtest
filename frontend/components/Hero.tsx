@@ -7,7 +7,7 @@ import MarqueeText from "@/subcomponents/MarqueeText";
 import StatsStrip from "@/subcomponents/StatsStrip";
 import React, { useMemo } from "react";
 import { motion, Variants } from "motion/react";
-import { useIsMobile, useReducedMotion } from "@/lib/useIsMobile";
+import { useMobileContext } from "@/lib/MobileContext";
 
 // Lazy load carousels - different ones for mobile vs desktop
 const DesktopCarousel = dynamic(() => import("@/subcomponents/Carosel"), {
@@ -25,8 +25,7 @@ const Marquee = dynamic(
 );
 
 const Hero = () => {
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = useReducedMotion();
+  const { isMobile, prefersReducedMotion } = useMobileContext();
   const shouldAnimate = !isMobile && !prefersReducedMotion;
 
   const fadeUp: Variants = useMemo(() => ({

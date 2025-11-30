@@ -69,6 +69,27 @@ body {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
+
+/* Disable transitions and hover effects on mobile for better performance */
+@media (max-width: 767px) {
+  * {
+    /* Disable all transitions on mobile */
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  /* Disable hover effects on mobile */
+  *:hover {
+    transform: none !important;
+    scale: 1 !important;
+  }
+  
+  /* Disable CSS marquee animations on mobile */
+  .animate-marquee,
+  .animate-marquee-vertical {
+    animation: none !important;
+  }
+}
 .font-zen{
   font-family: var(--font-zen-dots);
 }

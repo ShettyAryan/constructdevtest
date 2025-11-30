@@ -2,11 +2,10 @@
 import { ArrowRight } from 'lucide-react'
 import React from 'react'
 import { TypeAnimation } from 'react-type-animation';
-import { useIsMobile, useReducedMotion } from "@/lib/useIsMobile";
+import { useMobileContext } from "@/lib/MobileContext";
 
 const Deco = () => {
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = useReducedMotion();
+  const { isMobile, prefersReducedMotion } = useMobileContext();
   const shouldAnimate = !isMobile && !prefersReducedMotion;
   
   return (

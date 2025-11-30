@@ -6,7 +6,7 @@ import {motion} from 'motion/react';
 import { createSectionVariants, createItemVariants } from "@/data";
 import Link from "next/link";
 import React, { useMemo } from "react";
-import { useIsMobile, useReducedMotion } from "@/lib/useIsMobile";
+import { useMobileContext } from "@/lib/MobileContext";
 
 const works = [
   {
@@ -36,25 +36,38 @@ const works = [
 ];
 
 const OurWorks = () => {
-  const isMobile = useIsMobile();
-  const prefersReducedMotion = useReducedMotion();
+  const { isMobile, prefersReducedMotion } = useMobileContext();
+  const shouldAnimate = !isMobile && !prefersReducedMotion;
   
-  const sectionVariants = useMemo(() => createSectionVariants(isMobile, prefersReducedMotion), [isMobile, prefersReducedMotion]);
-  const itemVariants = useMemo(() => createItemVariants(isMobile, prefersReducedMotion), [isMobile, prefersReducedMotion]);
+  // Only create variants if needed (desktop)
+  const sectionVariants = shouldAnimate ? useMemo(() => createSectionVariants(isMobile, prefersReducedMotion), [isMobile, prefersReducedMotion]) : undefined;
+  const itemVariants = shouldAnimate ? useMemo(() => createItemVariants(isMobile, prefersReducedMotion), [isMobile, prefersReducedMotion]) : undefined;
+  
+  // Use regular div on mobile, motion.div on desktop
+  const Container = isMobile ? "div" : motion.div;
+  const TitleContainer = isMobile ? "div" : motion.div;
+  
+  const containerProps = isMobile 
+    ? { className: "w-full flex flex-col gap-6 mt-12 border-2 border-[#1a1a1a] p-4 rounded-lg bg-black" }
+    : {
+        initial: "hidden" as const,
+        whileInView: "show" as const,
+        viewport: { once: true, amount: 0.2 },
+        variants: sectionVariants,
+        className: "w-full flex flex-col gap-6 mt-12 border-2 border-[#1a1a1a] p-4 rounded-lg bg-black",
+      };
+  
+  const titleProps = isMobile
+    ? { className: "flex items-center justify-between w-full bg-[#1a1a1a] p-6 rounded-xl border border-[#222]" }
+    : {
+        variants: itemVariants,
+        className: "flex items-center justify-between w-full bg-[#1a1a1a] p-6 rounded-xl border border-[#222]",
+      };
   
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={sectionVariants}
-      className="w-full flex flex-col gap-6 mt-12 border-2 border-[#1a1a1a] p-4 rounded-lg bg-black"
-    >
+    <Container {...containerProps}>
       {/* Title Row */}
-      <motion.div
-        variants={itemVariants}
-        className="flex items-center justify-between w-full bg-[#1a1a1a] p-6 rounded-xl border border-[#222]"
-      >
+      <TitleContainer {...titleProps}>
         <h2 className="text-white text-2xl md:text-4xl font-medium tracking-tight">
           OUR <span className="text-[#1B4BCE]">WORKS</span>
         </h2>
@@ -68,18 +81,27 @@ const OurWorks = () => {
             ALL WORKS
           </span>
         </div>
-      </motion.div>
+      </TitleContainer>
 
       {/* Work Items */}
-      {works.map((w, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0 }}
-          viewport={{ once: true }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: (!isMobile && !prefersReducedMotion) ? 0.5 : 0, delay: (!isMobile && !prefersReducedMotion) ? i * 0.2 + 0.3 : 0 }}
-          className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-4 bg-[#1a1a1a] p-6 rounded-xl border border-[#222] hover:scale-101 hover:border-[#0033ff] transition-all ease-in-out duration-200"
-        >
+      {works.map((w, i) => {
+        const WorkItem = isMobile ? "div" : motion.div;
+        const workItemProps = isMobile
+          ? { 
+              key: i,
+              className: "grid grid-cols-1 lg:grid-cols-[60%_40%] gap-4 bg-[#1a1a1a] p-6 rounded-xl border border-[#222]" 
+            }
+          : {
+              key: i,
+              initial: { opacity: 0 },
+              viewport: { once: true },
+              whileInView: { opacity: 1 },
+              transition: { duration: 0.5, delay: i * 0.2 + 0.3 },
+              className: "grid grid-cols-1 lg:grid-cols-[60%_40%] gap-4 bg-[#1a1a1a] p-6 rounded-xl border border-[#222] hover:scale-101 hover:border-[#0033ff] transition-all ease-in-out duration-200"
+            };
+        
+        return (
+          <WorkItem {...workItemProps}>
           {/* LEFT SIDE — TEXT */}
           <div className="flex flex-col justify-start gap-6">
             <div className="flex items-center gap-3">
@@ -129,9 +151,10 @@ const OurWorks = () => {
               className="w-full h-full object-cover rounded-xl"
             />
           </div>
-        </motion.div>
-      ))}
-    </motion.div>
+          </WorkItem>
+        );
+      })}
+    </Container>
   );
 };
 

@@ -22,9 +22,13 @@ export function MobileProvider({ children }: { children: ReactNode }) {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
 
-    // Single resize listener for entire app
+    // Single resize listener for entire app - throttled for performance
+    let resizeTimer: NodeJS.Timeout;
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        setIsMobile(window.innerWidth < 768);
+      }, 150); // Throttle resize events
     };
 
     const handleMotionChange = (e: MediaQueryListEvent) => {
@@ -35,6 +39,7 @@ export function MobileProvider({ children }: { children: ReactNode }) {
     mediaQuery.addEventListener("change", handleMotionChange);
 
     return () => {
+      clearTimeout(resizeTimer);
       window.removeEventListener("resize", handleResize);
       mediaQuery.removeEventListener("change", handleMotionChange);
     };
