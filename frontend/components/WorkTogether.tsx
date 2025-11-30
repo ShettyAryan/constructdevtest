@@ -1,8 +1,14 @@
 "use client"
 import React from 'react'
-import Marquee from "react-fast-marquee";
+import dynamic from "next/dynamic";
 import MarqueeText from "@/subcomponents/MarqueeText";
 import { useIsMobile } from "@/lib/useIsMobile";
+
+// Lazy load react-fast-marquee only on desktop
+const Marquee = dynamic(
+  () => import("react-fast-marquee").then((mod) => ({ default: mod.default })),
+  { ssr: false }
+);
 
 const WorkTogether = () => {
   const isMobile = useIsMobile();
@@ -28,9 +34,11 @@ const WorkTogether = () => {
             
           </div>
         ) : (
-          <Marquee direction="left" pauseOnHover loop={0} autoFill>
-            <MarqueeText text="Let's work Together" />
-          </Marquee>
+          <div className="hidden sm:block">
+            <Marquee direction="left" pauseOnHover loop={0} autoFill>
+              <MarqueeText text="Let's work Together" />
+            </Marquee>
+          </div>
         )}
       </div>
     </div>

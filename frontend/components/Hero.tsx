@@ -6,9 +6,15 @@ import Deco from "@/subcomponents/Deco";
 import MarqueeText from "@/subcomponents/MarqueeText";
 import StatsStrip from "@/subcomponents/StatsStrip";
 import React, { useMemo } from "react";
-import Marquee from "react-fast-marquee";
+import dynamic from "next/dynamic";
 import { motion, Variants } from "motion/react";
 import { useIsMobile, useReducedMotion } from "@/lib/useIsMobile";
+
+// Lazy load react-fast-marquee only on desktop - it's heavy
+const Marquee = dynamic(
+  () => import("react-fast-marquee").then((mod) => ({ default: mod.default })),
+  { ssr: false }
+);
 
 const Hero = () => {
   const isMobile = useIsMobile();
@@ -100,19 +106,21 @@ const Hero = () => {
                 </div>
               </div>
             ) : (
-              <Marquee
-                direction="left"
-                pauseOnHover
-                loop={0}
-                autoFill
-                speed={20}
-              >
-                <MarqueeText text="Web Design" />
-                <MarqueeText text="Web Development" />
-                <MarqueeText text="Branding" />
-                <MarqueeText text="AI Integration" />
-                <MarqueeText text="SEO Management" />
-              </Marquee>
+              <div className="hidden sm:block">
+                <Marquee
+                  direction="left"
+                  pauseOnHover
+                  loop={0}
+                  autoFill
+                  speed={20}
+                >
+                  <MarqueeText text="Web Design" />
+                  <MarqueeText text="Web Development" />
+                  <MarqueeText text="Branding" />
+                  <MarqueeText text="AI Integration" />
+                  <MarqueeText text="SEO Management" />
+                </Marquee>
+              </div>
             )}
           </motion.div>
 

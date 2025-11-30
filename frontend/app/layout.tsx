@@ -3,6 +3,7 @@ import { Zen_Dots, Roboto_Flex, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import BeamsBackgroundWrapper from "@/components/BeamsBackgroundWrapper";
+import { MobileProvider } from "@/lib/MobileContext";
 
 const zendots = Zen_Dots({
   variable: "--font-zen-dots",
@@ -50,10 +51,12 @@ export default function RootLayout({
           {/* Lightweight gradient fallback for mobile */}
           <div className="sm:hidden bg-linear-to-b from-[#001B66] to-black opacity-40" />
         </div>
-        <div className="relative z-10">
-          <Navbar />
-          {children}
-        </div>
+        <MobileProvider>
+          <div className="relative z-10">
+            <Navbar />
+            {children}
+          </div>
+        </MobileProvider>
       </body>
     </html>
   );

@@ -1,7 +1,9 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { Marquee } from "./ui/marquee";
 import Image from "next/image";
 import React from "react";
+import { useIsMobile } from "@/lib/useIsMobile";
 
 const reviews = [
   {
@@ -79,6 +81,8 @@ const ReviewCard = ({
 };
 
  function Testimonials() {
+  const isMobile = useIsMobile();
+  
   return (
     <div
       id="testimonials"
@@ -93,17 +97,36 @@ const ReviewCard = ({
 
       {/* Marquee Reviews */}
       <div className="relative flex w-full flex-col items-center justify-center overflow-hidden bg-[#1a1a1a] p-6 rounded-xl border border-[#222]">
-        <Marquee pauseOnHover className="[--duration:25s]">
-          {firstRow.map((review) => (
-            <ReviewCard key={review.username} {...review} />
-          ))}
-        </Marquee>
+        {isMobile ? (
+          // Static display on mobile - no animations
+          <>
+            <div className="flex flex-col gap-4 w-full">
+              {firstRow.map((review) => (
+                <ReviewCard key={review.username} {...review} />
+              ))}
+            </div>
+            <div className="flex flex-col gap-4 w-full mt-4">
+              {secondRow.map((review) => (
+                <ReviewCard key={review.username} {...review} />
+              ))}
+            </div>
+          </>
+        ) : (
+          // Animated marquee on desktop
+          <>
+            <Marquee pauseOnHover className="[--duration:25s]">
+              {firstRow.map((review) => (
+                <ReviewCard key={review.username} {...review} />
+              ))}
+            </Marquee>
 
-        <Marquee reverse pauseOnHover className="[--duration:25s] mt-2">
-          {secondRow.map((review) => (
-            <ReviewCard key={review.username} {...review} />
-          ))}
-        </Marquee>
+            <Marquee reverse pauseOnHover className="[--duration:25s] mt-2">
+              {secondRow.map((review) => (
+                <ReviewCard key={review.username} {...review} />
+              ))}
+            </Marquee>
+          </>
+        )}
 
         {/* Gradient Edges */}
         <div className="pointer-events-none absolute inset-y-0 left-0 w-[18%] bg-linear-to-r from-[#1a1a1a]"></div>

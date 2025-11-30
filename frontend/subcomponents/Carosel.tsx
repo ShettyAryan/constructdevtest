@@ -229,14 +229,32 @@ function Carousel({
       {/* TRACK */}
       <motion.div
         className="flex"
-        drag="x"
-        onDragEnd={dragEnd}
+        drag={isMobile ? false : "x"} // Disable drag on mobile for better performance
+        onDragEnd={isMobile ? undefined : dragEnd}
         animate={{ x: -(currentIndex * trackOffset) }}
-        transition={isResetting ? { duration: 0 } : SPRING}
-        onAnimationComplete={handleAnimationComplete}
+        transition={isResetting || isMobile ? { duration: 0 } : SPRING}
+        onAnimationComplete={isMobile ? undefined : handleAnimationComplete}
         style={{ gap: `${GAP}px`, x }}
       >
         {carouselItems.map((item, index) => {
+          // Disable 3D transforms on mobile for better performance
+          if (isMobile) {
+            return (
+              <div
+                key={index}
+                className="shrink-0"
+                style={{ width: itemWidth }}
+              >
+                <CarouselProjectCard
+                  image={item.image}
+                  title={item.title}
+                  subtitle={item.description}
+                  nav={item.nav}
+                />
+              </div>
+            );
+          }
+
           const range = [
             -(index + 1) * trackOffset,
             -index * trackOffset,
@@ -260,7 +278,6 @@ function Carousel({
                 title={item.title}
                 subtitle={item.description}
                 nav={item.nav}
-      
               />
             </motion.div>
           );
